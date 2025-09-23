@@ -17,36 +17,9 @@ import (
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
 
-var upgrader = websocket.Upgrader{} // use default options
-
 type Message struct {
 	Message string         `json:"message"`
 	Headers map[string]any `json:"HEADERS"`
-}
-
-func echo(w http.ResponseWriter, r *http.Request) {
-	c, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Print("upgrade:", err)
-		return
-	}
-	defer c.Close()
-	for {
-		mt, message, err := c.ReadMessage()
-		m := &Message{}
-		err = json.Unmarshal(message, m)
-		fmt.Printf("%#v", m)
-		if err != nil {
-			log.Println("read:", err)
-			break
-		}
-		log.Printf("recv: %s", message)
-		err = c.WriteMessage(mt, []byte(m.Message))
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
 }
 
 type fucker struct {
@@ -62,7 +35,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	http.HandleFunc("/echo", echo)
+	room := &Room{
+		clients:    map[string]*Client{},
+		register:   make(chan *Client),
+		disconnect: make(chan *Client),
+		messages:   make(chan string),
+	}
+	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
+		err := registerClient(room, w, r)
+		if err != nil {
+			panic(err)
+		}
+	})
 	http.HandleFunc("/", home)
 	log.Println(*addr)
 	log.Fatal(http.ListenAndServe(*addr, nil))
