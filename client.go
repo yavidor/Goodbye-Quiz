@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/jaswdr/faker/v2"
 	"log"
 	"net/http"
+
+	"github.com/jaswdr/faker/v2"
 
 	"github.com/gorilla/websocket"
 )
@@ -43,7 +45,9 @@ func (c *Client) ReadMessages() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		v := ChatMessage{Sender: c.name, Content: message}
+		msg := &ClientMessage{}
+		json.Unmarshal(message, msg)
+		v := ChatMessage{Sender: c.name, Content: msg.Message}
 		c.Room.messages <- v
 	}
 
@@ -63,5 +67,4 @@ func registerClient(room *Room, w http.ResponseWriter, r *http.Request) {
 	client.Room.register <- client
 	go client.ReadMessages()
 	go client.sendMessages()
-	fmt.Println("OOF")
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,12 +9,12 @@ import (
 const ADDRESS = "localhost:8080"
 
 type templateValues struct {
-	host string
+	Host string
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./templates/index.html"))
-	tmpl.Execute(w, struct{ host string }{host: "ws://" + r.Host + "/echo"})
+	tmpl.Execute(w, templateValues{Host: "ws://" + r.Host + "/echo"})
 
 }
 

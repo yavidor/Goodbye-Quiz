@@ -2,24 +2,22 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"  crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.2" crossorigin="anonymous"></script>
     <title>HTMX WebSockets</title>
 </head>
 <body>
 
 <table>
 <tr>
-    <td valign="top" width="50%">
+    <td >
         <p>
             The WebSocket connection is opened automatically.
             Type a message and click "Send".
         </p>
 
-            <p>FR</p>
-            <div hx-ext="ws" ws-connect="{{.host}}">
-
-            <div id="output" style="max-height: 70vh;overflow-y: scroll; border: 1px solid #ccc; padding: 10px; min-height: 100px;">
+            <div hx-ext="ws" ws-connect="{{.Host}}">
+            <div id="output" style="max-height: 70vh;overflow-y: scroll; border: 1px solid #ccc; padding: 10px; ">
                 </div>
 
             <form ws-send style="margin-top: 1em;">
@@ -27,7 +25,7 @@
                 <button>Send</button>
             </form>
         </div>
-    </td>
+                </td>
 </tr>
 </table>
 
