@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ type templateValues struct {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./templates/index.html"))
-	tmpl.Execute(w, templateValues{host: "ws://" + r.Host + "/echo"})
+	tmpl.Execute(w, struct{ host string }{host: "ws://" + r.Host + "/echo"})
 
 }
 

@@ -10,7 +10,6 @@ type ChatMessage struct {
 }
 
 type Room struct {
-	// clients    map[string]*Client
 	clients    []*Client
 	register   chan *Client
 	disconnect chan *Client
