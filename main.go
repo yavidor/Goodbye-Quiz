@@ -5,7 +5,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -17,6 +19,11 @@ var addr = flag.String("addr", "localhost:8080", "http service address")
 
 var upgrader = websocket.Upgrader{} // use default options
 
+type Message struct {
+	Message string         `json:"message"`
+	Headers map[string]any `json:"HEADERS"`
+}
+
 func echo(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -26,12 +33,15 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	defer c.Close()
 	for {
 		mt, message, err := c.ReadMessage()
+		m := &Message{}
+		err = json.Unmarshal(message, m)
+		fmt.Printf("%#v", m)
 		if err != nil {
 			log.Println("read:", err)
 			break
 		}
 		log.Printf("recv: %s", message)
-		err = c.WriteMessage(mt, message)
+		err = c.WriteMessage(mt, []byte(m.Message))
 		if err != nil {
 			log.Println("write:", err)
 			break
