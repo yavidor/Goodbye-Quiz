@@ -1,15 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/jaswdr/faker/v2"
 	"log"
 	"net/http"
+
+	"github.com/jaswdr/faker/v2"
 
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}
 
 type ClientMessage struct {
 	Message string `json:"message"`
@@ -43,7 +45,9 @@ func (c *Client) ReadMessages() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		v := ChatMessage{Sender: c.name, Content: message}
+		msg := &ClientMessage{}
+		json.Unmarshal(message, msg)
+		v := ChatMessage{Sender: c.name, Content: msg.Message}
 		c.Room.messages <- v
 	}
 

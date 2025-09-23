@@ -6,7 +6,7 @@ import (
 
 type ChatMessage struct {
 	Sender  string
-	Content []byte
+	Content string
 }
 
 type Room struct {
