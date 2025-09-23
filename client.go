@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -15,7 +16,14 @@ type Client struct {
 	Con      *websocket.Conn
 }
 
+func (c *Client) sendMessages() {
+	for m := range c.Outbound {
+		c.Con.WriteMessage(1, m)
+	}
+}
+
 func registerClient(room *Room, w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("Hello")
 	con, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return err
@@ -27,8 +35,11 @@ func registerClient(room *Room, w http.ResponseWriter, r *http.Request) error {
 		Con:      con,
 	}
 	client.Room.register <- client
+	go client.sendMessages()
 	for {
 		_, message, err := client.Con.ReadMessage()
+		v := Message{Sender: "Me", Content: message}
+		room.messages <- v
 		if err != nil {
 			return err
 		}
