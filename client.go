@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}
+var upgrader = websocket.Upgrader{}
 
 type ClientMessage struct {
 	Message string `json:"message"`
@@ -31,7 +31,8 @@ func (c *Client) sendMessages() {
 		c.Conn.Close()
 	}()
 	for m := range c.Outbound {
-		c.Conn.WriteMessage(websocket.TextMessage, []byte(m))
+		response := fmt.Sprintf("<p>%s</p>", m)
+		c.Conn.WriteMessage(websocket.TextMessage, []byte(response))
 	}
 }
 
