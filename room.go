@@ -10,7 +10,6 @@ type ChatMessage struct {
 }
 
 type Room struct {
-	// clients    map[string]*Client
 	clients    []*Client
 	register   chan *Client
 	disconnect chan *Client
@@ -38,7 +37,7 @@ func (r *Room) Init() {
 		select {
 		case message := <-r.messages:
 			fmt.Printf("%s: %s\n", message.Sender, message.Content)
-			r.SendAll(fmt.Sprintf("%s: %s\n", message.Sender, message.Content))
+			r.SendAll(fmt.Sprintf("%s: %s", message.Sender, message.Content))
 		case client := <-r.register:
 			fmt.Printf("%s has joined\n", client.name)
 			r.SendAll(fmt.Sprintf("%s has joined", client.name))

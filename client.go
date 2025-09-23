@@ -25,7 +25,7 @@ type Client struct {
 
 func (c *Client) sendMessages() {
 	defer func() {
-		fmt.Println("Defered write")
+		log.Println("Defered write")
 		c.Conn.Close()
 	}()
 	for m := range c.Outbound {
@@ -35,7 +35,7 @@ func (c *Client) sendMessages() {
 
 func (c *Client) ReadMessages() {
 	defer func() {
-		fmt.Println("Defered read")
+		log.Println("Defered read")
 		c.Conn.Close()
 	}()
 	for {
@@ -63,5 +63,4 @@ func registerClient(room *Room, w http.ResponseWriter, r *http.Request) {
 	client.Room.register <- client
 	go client.ReadMessages()
 	go client.sendMessages()
-	fmt.Println("OOF")
 }

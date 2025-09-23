@@ -12,6 +12,7 @@ type templateValues struct {
 	host string
 }
 
+// TODO: Add UI????
 func home(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./templates/index.html"))
 	tmpl.Execute(w, templateValues{host: "ws://" + r.Host + "/echo"})
@@ -19,7 +20,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	log.SetFlags(0)
 	room := newRoom()
 	go room.Init()
 	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
