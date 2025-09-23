@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type Message struct {
+type ChatMessage struct {
 	Sender  string
 	Content []byte
 }
@@ -14,7 +14,7 @@ type Room struct {
 	clients    []*Client
 	register   chan *Client
 	disconnect chan *Client
-	messages   chan Message
+	messages   chan ChatMessage
 }
 
 func newRoom() *Room {
@@ -22,20 +22,26 @@ func newRoom() *Room {
 		clients:    []*Client{},
 		register:   make(chan *Client),
 		disconnect: make(chan *Client),
-		messages:   make(chan Message),
+		messages:   make(chan ChatMessage),
 	}
 }
 
+func (r *Room) SendAll(message string) {
+	for _, c := range r.clients {
+		c.Outbound <- message
+	}
+
+}
+
 func (r *Room) Init() {
-	fmt.Println("Hello2")
 	for {
 		select {
 		case message := <-r.messages:
-			fmt.Printf("%s: %s", message.Sender, message.Content)
+			fmt.Printf("%s: %s\n", message.Sender, message.Content)
+			r.SendAll(fmt.Sprintf("%s: %s\n", message.Sender, message.Content))
 		case client := <-r.register:
-			for _, c := range r.clients {
-				c.Messages <- []byte(fmt.Sprintf("ANother one has joined"))
-			}
+			fmt.Printf("%s has joined\n", client.name)
+			r.SendAll(fmt.Sprintf("%s has joined", client.name))
 			r.clients = append(r.clients, client)
 		}
 	}

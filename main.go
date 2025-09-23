@@ -23,10 +23,7 @@ func main() {
 	room := newRoom()
 	go room.Init()
 	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
-		err := registerClient(room, w, r)
-		if err != nil {
-			panic(err)
-		}
+		registerClient(room, w, r)
 	})
 	http.HandleFunc("/", home)
 	log.Println(ADDRESS)
