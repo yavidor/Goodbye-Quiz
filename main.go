@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const addr = "localhost:8080"
+const ADDRESS = "localhost:8080"
 
 type templateValues struct {
 	host string
@@ -29,6 +29,6 @@ func main() {
 		}
 	})
 	http.HandleFunc("/", home)
-	log.Println(addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+	log.Println(ADDRESS)
+	log.Fatal(http.ListenAndServe(ADDRESS, nil))
 }

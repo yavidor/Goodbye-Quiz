@@ -34,7 +34,7 @@ func (r *Room) Init() {
 			fmt.Printf("%s: %s", message.Sender, message.Content)
 		case client := <-r.register:
 			for _, c := range r.clients {
-				c.Outbound <- []byte(fmt.Sprintf("ANother one has joined"))
+				c.Messages <- []byte(fmt.Sprintf("ANother one has joined"))
 			}
 			r.clients = append(r.clients, client)
 		}

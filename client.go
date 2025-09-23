@@ -9,16 +9,20 @@ import (
 
 var upgrader = websocket.Upgrader{}
 
+type ClientMessage struct {
+	Message string `json:"message"`
+	Headers string `json:"HEADERS"`
+}
+
 type Client struct {
-	Inbound  chan []byte
-	Outbound chan []byte
+	Messages chan ClientMessage
 	Room     *Room
 	Con      *websocket.Conn
 }
 
 func (c *Client) sendMessages() {
-	for m := range c.Outbound {
-		c.Con.WriteMessage(1, m)
+	for m := range c.Messages {
+		c.Con.WriteMessage(1, []byte(m.Message))
 	}
 }
 
@@ -29,8 +33,7 @@ func registerClient(room *Room, w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	client := &Client{
-		Inbound:  make(chan []byte),
-		Outbound: make(chan []byte),
+		Messages: make(chan ClientMessage),
 		Room:     room,
 		Con:      con,
 	}
@@ -43,6 +46,5 @@ func registerClient(room *Room, w http.ResponseWriter, r *http.Request) error {
 		if err != nil {
 			return err
 		}
-		client.Inbound <- message
 	}
 }
