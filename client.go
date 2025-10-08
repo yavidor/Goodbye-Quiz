@@ -31,7 +31,7 @@ func (c *Client) sendMessages() {
 		c.Conn.Close()
 	}()
 	for m := range c.Outbound {
-		response := fmt.Sprintf("<p>%s</p>", m)
+		response := fmt.Sprintf("%s", m)
 		c.Conn.WriteMessage(websocket.TextMessage, []byte(response))
 	}
 }
@@ -44,7 +44,8 @@ func (c *Client) ReadMessages() {
 	for {
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return
 		}
 		msg := &ClientMessage{}
 		json.Unmarshal(message, msg)
