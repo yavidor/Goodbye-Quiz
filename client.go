@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,11 +12,7 @@ import (
 
 var upgrader = websocket.Upgrader{}
 
-type ClientMessage struct {
-	Message string `json:"message"`
-	Headers string `json:"HEADERS"`
-}
-
+type ClientMessage = string
 type Client struct {
 	name     string
 	Outbound chan string
@@ -47,9 +42,7 @@ func (c *Client) ReadMessages() {
 			log.Println(err)
 			return
 		}
-		msg := &ClientMessage{}
-		json.Unmarshal(message, msg)
-		v := ChatMessage{Sender: c.name, Content: msg.Message}
+		v := ChatMessage{Sender: c.name, Content: string(message)}
 		c.Room.messages <- v
 	}
 
