@@ -16,46 +16,39 @@
 					output.appendChild(d);
 					output.scroll(0, output.scrollHeight);
 					};
+					ws = new WebSocket("{{.Host}}");
+					ws.onopen = function(evt) {
+						print("OPEN");
+					}
+					ws.onclose = function(evt) {
+						print("CLOSE");
+						ws = null;
+					}
+					ws.onmessage = function(evt) {
+						print("RESPONSE: " + evt.data);
+					}
+					ws.onerror = function(evt) {
+						print("ERROR: " + evt.data);
+					}
 					
-					document.getElementById("open").onclick = function(evt) {
-						if (ws) {
+					document.getElementById("send").onclick = function(evt) {
+						if (!ws) {
 							return false;
 						}
-						ws = new WebSocket("{{.Host}}");
-						ws.onopen = function(evt) {
-							print("OPEN");
-						}
-						ws.onclose = function(evt) {
-							print("CLOSE");
-							ws = null;
-						}
-						ws.onmessage = function(evt) {
-							print("RESPONSE: " + evt.data);
-						}
-						ws.onerror = function(evt) {
-							print("ERROR: " + evt.data);
-						}
+						print("SEND: " + input.value);
+						ws.send(input.value);
 						return false;
 						};
 						
-						document.getElementById("send").onclick = function(evt) {
+						document.getElementById("close").onclick = function(evt) {
 							if (!ws) {
 								return false;
 							}
-							print("SEND: " + input.value);
-							ws.send(input.value);
+							ws.close();
 							return false;
 							};
 							
-							document.getElementById("close").onclick = function(evt) {
-								if (!ws) {
-									return false;
-								}
-								ws.close();
-								return false;
-								};
-								
-								});
+							});
 		</script>
 	</head>
 	<body>
@@ -65,14 +58,19 @@
 					"Send" to send a message to the server and "Close" to close the connection.
 					You can change the message and send multiple times.</p>
 				<form>
-					<button id="open">Open</button>
-					<button id="close">Close</button>
 					<input id="input" type="text" value="Hello world!">
 					<button id="send">Send</button>
 				</form>
 			</td><td valign="top" width="50%">
 				<div id="output" style="max-height: 70vh;overflow-y: scroll;"></div>
 			</td></tr>
+			<tr>
+				<td>
+					<a href="/noder">
+						<p>Hello</p>
+					</a>
+				</td>
+			</tr>
 		</table>
 	</body>
 </html>

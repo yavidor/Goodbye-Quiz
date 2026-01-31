@@ -17,6 +17,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, templateValues{Host: "ws://" + r.Host + "/echo"})
 
 }
+func noder(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("./templates/noder.html"))
+	tmpl.Execute(w, "")
+}
 
 func main() {
 	room := newRoom()
@@ -24,6 +28,7 @@ func main() {
 	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
 		registerClient(room, w, r)
 	})
+	http.HandleFunc("/noder", noder)
 	http.HandleFunc("/", home)
 	log.Println(ADDRESS)
 	log.Fatal(http.ListenAndServe(ADDRESS, nil))

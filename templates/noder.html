@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>No neder</title>
+		<style>
+			.cell {
+				height: var(--cell-size);
+				width: var(--cell-size);
+				position: relative;
+				background-color: var(--cell-background-color);
+				border: var(--cell-border-size) solid var(--cell-border-color);
+				border-radius: 1000px;
+			}
+			.cell >	.yourmom {
+				width: 50%;
+				height: var(--cell-border-size);
+				background-color: var(--hand-color);
+				position: absolute;
+				transform-origin: center left;
+				top: 50%;
+				left: 50%;
+				translate: 0% -50%;
+				rotate: 135deg;
+				transition: rotate 250ms;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="app">
+			<div class="cell">
+				<div class="yourmom"></div>
+			</div>
+		</div>
+	</body>
+</html>
